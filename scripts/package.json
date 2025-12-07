@@ -1,0 +1,19 @@
+{
+  "name": "@tylerauerbeck/list-releases",
+  "description": "Standalone compiled script that lists releases",
+  "type": "module",
+  "files": [
+    "list-releases.js"
+  ],
+  "scripts": {
+    "build": "npx tsc",
+    "prepare": "npm run build"
+  },
+  "dependencies": {
+    "@octokit/rest": "^22.0.1"
+  },
+  "devDependencies": {
+    "@types/node": "^25.0.0",
+    "typescript": "^5.9.3"
+  }
+}

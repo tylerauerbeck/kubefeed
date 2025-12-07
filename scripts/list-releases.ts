@@ -1,3 +1,5 @@
+#!/usr/bin/env node
+
 import { Octokit } from "@octokit/rest";
 import { writeFileSync } from "fs";
 import { join } from "path";
@@ -52,7 +54,7 @@ async function main() {
       last_updated: new Date().toISOString()
     };
 
-    const filePath = "./files/kubernetes-releases.json";
+    const filePath = "../files/kubernetes-releases.json";
     writeFileSync(filePath, JSON.stringify(output, null, 2), "utf8");
 
     console.log(`Wrote ${output.count} releases to ${filePath}. Last updated: ${output.last_updated}`);

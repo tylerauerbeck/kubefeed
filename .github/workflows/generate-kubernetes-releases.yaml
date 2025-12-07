@@ -1,0 +1,45 @@
+name: Generate Kubernetes Release Data 
+
+on:
+  workflow_dispatch:
+  workflow_run:
+    workflows: ["Compile Kubernetes Release Generator"]
+    types: [completed]
+  schedule:
+    - cron: '0 2 * * *' # Runs every day at 2 AM UTC.
+
+jobs:
+  generate:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      packages: read
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v4
+
+    - name: Set up Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: '22'
+
+    - name: Restore node modules
+      uses: actions/cache@v4 # Use the latest version of the cache action
+      with:
+        path: scripts/node_modules
+        key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }} # For npm
+        restore-keys: |
+          ${{ runner.os }}-node-
+
+    - name: Get list-releases
+      run: |
+        cd scripts
+        node list-releases.ts
+        git status
+      env:
+        GITHUB_TOKEN: "${{ secrets.GITHUB_TOKEN }}"
+
+    - name: Commit changed files
+      uses: stefanzweifel/git-auto-commit-action@v5
+      with:
+        commit_message: "Automated commit: Update generated files"

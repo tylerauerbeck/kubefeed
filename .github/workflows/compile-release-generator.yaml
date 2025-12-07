@@ -1,0 +1,45 @@
+name: Prepare Kubernetes Release Generator
+
+on:
+  workflow_dispatch:
+  push:
+    paths:
+      - 'scripts/*.ts'
+  pull_request:
+    paths:
+      - 'scripts/*.ts'
+  schedule:
+    - cron: '0 2 * * *' # Runs every day at 2 AM UTC.
+
+jobs:
+  compile:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      packages: write
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v4
+
+    - name: Set up Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: '22'
+
+    - name: Install dependencies
+      run: |
+        cd scripts
+        npm install
+
+    - name: Compile TypeScript
+      run: |
+        cd scripts
+        npx tsc 
+
+    - name: Cache node modules
+      uses: actions/cache@v4 # Use the latest version of the cache action
+      with:
+        path: scripts/node_modules
+        key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }} # For npm
+        restore-keys: |
+          ${{ runner.os }}-node-

@@ -6,11 +6,11 @@
     "forceConsistentCasingInFileNames": true,
     "strict": true,                    // Enable all strict type-checking options
     "skipLibCheck": true,              // Ignore type checking of all declaration files
-    "outDir": "scripts",               // Output compiled files into 'scripts' directory
+    "outDir": ".",               // Output compiled files into 'scripts' directory
     "resolveJsonModule": true,         // Import JSON files
     "moduleResolution": "node",
     "allowSyntheticDefaultImports": true
   },
-  "include": ["scripts/**/*.ts"],
+  "include": ["./*.ts"],
   "exclude": ["node_modules"]
 }
