@@ -1,20 +1,18 @@
 {
-  "compilerOptions": {
-    "target": "ES2020",                // Use modern JS features
-    "module": "ESNext",              // For Node.js compatibility
-    "esModuleInterop": true,           // Allow default imports from modules with no default export
-    "forceConsistentCasingInFileNames": true,
-    "strict": true,                    // Enable all strict type-checking options
-    "skipLibCheck": true,              // Ignore type checking of all declaration files
-    "outDir": "scripts",               // Output compiled files into 'scripts' directory
-    "resolveJsonModule": true,         // Import JSON files
-    "moduleResolution": "node",
-    "allowSyntheticDefaultImports": true
-  },
-  "include": [
-    "scripts/**/*.ts"
-  ],
-  "exclude": [
-    "node_modules"
+  "exclude": ["node_modules","scripts"]
+  "files": [],
+  "references": [
+    {
+      "path": "./.nuxt/tsconfig.app.json"
+    },
+    {
+      "path": "./.nuxt/tsconfig.server.json"
+    },
+    {
+      "path": "./.nuxt/tsconfig.shared.json"
+    },
+    {
+      "path": "./.nuxt/tsconfig.node.json"
+    }
   ]
 }

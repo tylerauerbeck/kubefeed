@@ -1,15 +1,24 @@
 {
+  "name": "kubefeed",
   "type": "module",
+  "private": true,
   "scripts": {
     "build-list-releases": "tsc scripts/list-releases.ts",
     "run-list-releases": "node scripts/list-releases.js",
     "list-releases": "npm run build-list-releases && npm run run-list-releases"
+    "build": "nuxt build",
+    "dev": "nuxt dev",
+    "generate": "nuxt generate",
+    "preview": "nuxt preview",
+    "postinstall": "nuxt prepare"
   },
   "dependencies": {
-    "@octokit/rest": "^22.0.1"
+    "@octokit/rest": "^22.0.1",
+    "nuxt": "^4.2.1",
+    "vue": "^3.5.25",
+    "vue-router": "^4.6.3"
   },
   "devDependencies": {
-    "ts-node": "^10.9.2",
     "typescript": "^5.9.3"
   }
 }
