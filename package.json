@@ -5,7 +5,7 @@
   "scripts": {
     "build-list-releases": "tsc scripts/list-releases.ts",
     "run-list-releases": "node scripts/list-releases.js",
-    "list-releases": "npm run build-list-releases && npm run run-list-releases"
+    "list-releases": "npm run build-list-releases && npm run run-list-releases",
     "build": "nuxt build",
     "dev": "nuxt dev",
     "generate": "nuxt generate",
