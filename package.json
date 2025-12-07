@@ -1,4 +1,5 @@
 {
+  "type": "module",
   "scripts": {
     "build-list-releases": "tsc scripts/list-releases.ts",
     "run-list-releases": "node scripts/list-releases.js",

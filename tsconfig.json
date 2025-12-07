@@ -1,7 +1,7 @@
 {
   "compilerOptions": {
     "target": "ES2020",                // Use modern JS features
-    "module": "commonjs",              // For Node.js compatibility
+    "module": "ESNext",              // For Node.js compatibility
     "esModuleInterop": true,           // Allow default imports from modules with no default export
     "forceConsistentCasingInFileNames": true,
     "strict": true,                    // Enable all strict type-checking options
