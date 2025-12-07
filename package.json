@@ -1,0 +1,14 @@
+{
+  "scripts": {
+    "build-list-releases": "tsc scripts/list-releases.ts",
+    "run-list-releases": "node scripts/list-releases.js",
+    "list-releases": "npm run build-list-releases && npm run run-list-releases"
+  },
+  "dependencies": {
+    "@octokit/rest": "^22.0.1"
+  },
+  "devDependencies": {
+    "ts-node": "^10.9.2",
+    "typescript": "^5.9.3"
+  }
+}
