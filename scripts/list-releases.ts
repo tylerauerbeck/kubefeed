@@ -1,4 +1,6 @@
 import { Octokit } from "@octokit/rest";
+import { writeFileSync } from "fs";
+import { join } from "path";
 
 // Read token from environment
 const token = process.env.GITHUB_TOKEN;
@@ -34,27 +36,28 @@ async function listAllReleases(owner: string, repo: string) {
 async function main() {
   try {
     const releases = await listAllReleases("kubernetes", "kubernetes");
-    console.log(`# Releases for kubernetes/kubernetes`);
-    for (const release of releases) {
-      const {
-        tag_name,
-        name,
-        published_at,
-        html_url,
-        draft,
-        prerelease,
-      } = release;
+    const releasesArray = releases.map((release: any) => ({
+      name: release.name,
+      tag: release.tag_name,
+      published_date: release.published_at,
+      url: release.html_url,
+      draft: release.draft,
+      prerelease: release.prerelease,
+      release_notes: release.body,
+    }));
 
-      console.log(`- ${tag_name} (${name || "no name"})
-  Published: ${published_at}
-  URL: ${html_url}
-  Draft: ${draft}
-  Prerelease: ${prerelease}
-`);
-    }
-    console.log(`\nTotal releases found: ${releases.length}`);
+    const output = {
+      releases: releasesArray,
+      count: releasesArray.length,
+      last_updated: new Date().toISOString()
+    };
+
+    const filePath = "./files/kubernetes-releases.json";
+    writeFileSync(filePath, JSON.stringify(output, null, 2), "utf8");
+
+    console.log(`Wrote ${output.count} releases to ${filePath}. Last updated: ${output.last_updated}`);
   } catch (error) {
-    console.error("Failed to fetch releases:", error);
+    console.error("Failed to fetch or write releases:", error);
     process.exit(1);
   }
 }
