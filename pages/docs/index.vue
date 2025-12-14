@@ -2,9 +2,6 @@
   <div class="docs-page">
     <header class="header">
       <div class="header-content">
-        <NuxtLink to="/" class="logo-link">
-          <img src="/kubefeed.png" alt="Kubefeed" class="header-logo" />
-        </NuxtLink>
         <div class="header-icons">
           <NuxtLink to="/" class="icon-link" aria-label="Home">
             <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
@@ -28,27 +25,18 @@
     </header>
     
     <main class="main-content">
+      <aside class="sidebar">
+        <h3 class="sidebar-header">Documentation</h3>
+        <nav class="sidebar-nav">
+          <NuxtLink to="/docs/what-is-it" class="sidebar-link">What Is It</NuxtLink>
+          <NuxtLink to="/docs/how-to-use-it" class="sidebar-link">How To Use It</NuxtLink>
+          <NuxtLink to="/docs/questions" class="sidebar-link">Questions</NuxtLink>
+        </nav>
+      </aside>
+      
       <div class="docs-container">
         <h1>Documentation</h1>
-        
-        <section class="docs-section">
-          <h2>Getting Started</h2>
-          <p>Welcome to Kubefeed documentation. This is where you can learn about how to use Kubefeed.</p>
-        </section>
-
-        <section class="docs-section">
-          <h2>What is Kubefeed?</h2>
-          <p>Kubefeed is a tool for tracking Kubernetes releases and updates.</p>
-        </section>
-
-        <section class="docs-section">
-          <h2>Features</h2>
-          <ul>
-            <li>Track Kubernetes releases</li>
-            <li>JSON feed API</li>
-            <li>Easy integration</li>
-          </ul>
-        </section>
+        <p class="intro-text">Welcome to Kubefeed documentation. Select a topic from the sidebar to get started.</p>
       </div>
     </main>
   </div>
@@ -74,21 +62,11 @@
 
 .header-content {
   display: flex;
-  justify-content: space-between;
+  justify-content: flex-end;
   align-items: center;
   padding: 1rem 2rem;
   max-width: 1200px;
   margin: 0 auto;
-}
-
-.logo-link {
-  display: flex;
-  align-items: center;
-}
-
-.header-logo {
-  height: 40px;
-  width: auto;
 }
 
 .header-icons {
@@ -121,14 +99,67 @@
 }
 
 .main-content {
+  display: flex;
   padding-top: 80px;
   padding-bottom: 4rem;
+  max-width: 1400px;
+  margin: 0 auto;
+  gap: 3rem;
+}
+
+.sidebar {
+  position: sticky;
+  top: 100px;
+  width: 250px;
+  min-width: 250px;
+  height: fit-content;
+  padding: 2rem;
+  background-color: rgba(255, 255, 255, 0.05);
+  border-radius: 8px;
+  margin-left: 2rem;
+}
+
+.sidebar-header {
+  font-size: 1.3rem;
+  font-weight: bold;
+  margin-bottom: 1.5rem;
+  padding-bottom: 1rem;
+  color: white;
+  letter-spacing: 0.05em;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.sidebar-nav {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.sidebar-link {
+  color: rgba(255, 255, 255, 0.8);
+  text-decoration: none;
+  font-size: 1rem;
+  padding: 0.5rem 0;
+  transition: color 0.2s ease;
+  border-left: 2px solid transparent;
+  padding-left: 1rem;
+}
+
+.sidebar-link:hover {
+  color: white;
+  border-left-color: white;
+}
+
+.sidebar-link.router-link-active {
+  color: white;
+  border-left-color: white;
 }
 
 .docs-container {
+  flex: 1;
   max-width: 800px;
-  margin: 0 auto;
   padding: 2rem;
+  margin-right: 2rem;
 }
 
 .docs-container h1 {
@@ -138,32 +169,9 @@
   letter-spacing: 0.05em;
 }
 
-.docs-section {
-  margin-bottom: 3rem;
-}
-
-.docs-section h2 {
-  font-size: 1.8rem;
-  font-weight: 600;
-  margin-bottom: 1rem;
-  color: #ffffff;
-}
-
-.docs-section p {
+.intro-text {
   font-size: 1.1rem;
   line-height: 1.8;
   color: rgba(255, 255, 255, 0.9);
-  margin-bottom: 1rem;
-}
-
-.docs-section ul {
-  font-size: 1.1rem;
-  line-height: 1.8;
-  color: rgba(255, 255, 255, 0.9);
-  padding-left: 2rem;
-}
-
-.docs-section li {
-  margin-bottom: 0.5rem;
 }
 </style>
