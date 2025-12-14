@@ -52,14 +52,14 @@ export default defineEventHandler((event: H3Event) => {
       });
     }
 
-    const filePath = join(process.cwd(), "files", "kubernetes-releases.json");
+    const filePath = join(process.cwd(), "server", "data", "kubernetes-releases.json");
     let fileData: ReleasesFile;
     try {
       fileData = JSON.parse(readFileSync(filePath, "utf-8"));
     } catch (err) {
       throw createError({
         statusCode: 500,
-        statusMessage: "Unable to read files/kubernetes-releases.json.",
+        statusMessage: "Unable to read server/data/kubernetes-releases.json.",
       });
     }
 
