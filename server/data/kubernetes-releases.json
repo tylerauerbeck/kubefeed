@@ -1,6 +1,15 @@
 {
   "releases": [
     {
+      "name": "Kubernetes v1.32.11",
+      "tag": "v1.32.11",
+      "published_date": "2025-12-16T21:28:50Z",
+      "url": "https://github.com/kubernetes/kubernetes/releases/tag/v1.32.11",
+      "draft": false,
+      "prerelease": false,
+      "release_notes": "\nSee [kubernetes-announce@](https://groups.google.com/forum/#!forum/kubernetes-announce). Additional binary downloads are linked in the [CHANGELOG](https://github.com/kubernetes/kubernetes/blob/master/CHANGELOG/CHANGELOG-1.32.md).\n\nSee the [CHANGELOG](https://github.com/kubernetes/kubernetes/blob/master/CHANGELOG/CHANGELOG-1.32.md) for more details.\n\n\n\n"
+    },
+    {
       "name": "Kubernetes v1.35.0-rc.1",
       "tag": "v1.35.0-rc.1",
       "published_date": "2025-12-09T19:13:00Z",
@@ -6949,6 +6958,6 @@
       "release_notes": "New stable release with PD volumes and binary releases.\n\nWith binary releases, some clouds are broken.  We will be cutting new releases as these are fixed.\n\nNamely, v0.3 should be used for vSphere, Azure and Rackspace.  GCE and Vagrant are supported the v0.4 binary release.\n\n| binary | hash alg | hash |\n| --- | --- | --- |\n| `kubernetes.tar.gz` | md5 | `4e743950263b15045b698e0fee0cf761` |\n| `kubernetes.tar.gz` | sha1 | `d6ebb46071b09b559ea55d2afc246f8b5af3078d` |\n"
     }
   ],
-  "count": 772,
-  "last_updated": "2025-12-16T02:44:10.045Z"
+  "count": 773,
+  "last_updated": "2025-12-17T02:42:45.927Z"
 }
