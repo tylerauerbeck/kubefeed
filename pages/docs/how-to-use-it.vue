@@ -50,19 +50,51 @@
 
         <section class="docs-section">
           <h2>Query Parameters</h2>
-          <ul>
+          <!-- <ul>
             <li><strong>draft</strong> - Filter by draft status (true/false)</li>
             <li><strong>prerelease</strong> - Filter by pre-release status (true/false)</li>
             <li><strong>notes</strong> - Include release notes (true/false)</li>
-          </ul>
+          </ul> -->
+          <table>
+            <thead>
+              <tr>
+                <th>Parameter</th>
+                <th>Description</th>
+                <th>Type</th>
+                <th>Default</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><strong>draft</strong></td>
+                <td>Filter by draft status</td>
+                <td>boolean</td>
+                <td>false</td>
+              </tr>
+              <tr>
+                <td><strong>prerelease</strong></td>
+                <td>Filter by pre-release status</td>
+                <td>boolean</td>
+                <td>false</td>
+              </tr>
+              <tr>
+                <td><strong>notes</strong></td>
+                <td>Include release notes</td>
+                <td>boolean</td>
+                <td>false</td>
+              </tr>
+            </tbody>
+          </table>
         </section>
 
         <section class="docs-section">
           <h2>Example Usage</h2>
-          <p>Fetch all releases:</p>
+          <p>Fetch all stable releases:</p>
           <pre><code>GET /api/feeds/json</code></pre>
-          <p>Fetch only stable releases (no drafts or pre-releases):</p>
-          <pre><code>GET /api/feeds/json?draft=false&prerelease=false</code></pre>
+          <p>Fetch stable releases including drafts and pre-releases):</p>
+          <pre><code>GET /api/feeds/json?draft=true&prerelease=true</code></pre>
+          <p>Fetch releases including release notes:</p>
+          <pre><code>GET /api/feeds/json?notes=true</code></pre>
         </section>
       </div>
     </main>
@@ -237,5 +269,44 @@
   color: #a8dadc;
   font-family: 'Courier New', monospace;
   font-size: 0.95rem;
+}
+
+.docs-section table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 1.5rem 0;
+  background-color: rgba(255, 255, 255, 0.05);
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+.docs-section table th {
+  background-color: rgba(255, 255, 255, 0.1);
+  color: white;
+  font-weight: 600;
+  text-align: left;
+  padding: 1rem;
+  font-size: 1rem;
+  border-bottom: 2px solid rgba(255, 255, 255, 0.2);
+}
+
+.docs-section table td {
+  padding: 1rem;
+  color: rgba(255, 255, 255, 0.9);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  font-size: 1rem;
+}
+
+.docs-section table tr:last-child td {
+  border-bottom: none;
+}
+
+.docs-section table tr:hover {
+  background-color: rgba(255, 255, 255, 0.08);
+}
+
+.docs-section table td strong {
+  color: #a8dadc;
+  font-family: 'Courier New', monospace;
 }
 </style>

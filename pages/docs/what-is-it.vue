@@ -47,7 +47,6 @@
           <ul>
             <li>Track official Kubernetes releases</li>
             <li>JSON feed API for easy integration</li>
-            <li>Real-time updates on new versions</li>
             <li>Filter by release status (draft, pre-release, etc.)</li>
           </ul>
         </section>

@@ -24,6 +24,7 @@
     <div class="content">
       <img src="/kubefeed.png" alt="Kubefeed" class="logo" />
       <h1 class="title">KUBEFEED</h1>
+      <p class="subtitle">Your Source for Kubernetes Release Details</p>
     </div>
   </div>
 </template>
@@ -89,5 +90,13 @@
   color: white;
   margin: 0;
   letter-spacing: 0.3em;
+}
+
+.subtitle {
+  font-size: 1.25rem;
+  color: rgba(255, 255, 255, 0.8);
+  margin: 0;
+  font-weight: 300;
+  letter-spacing: 0.05em;
 }
 </style>
