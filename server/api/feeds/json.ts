@@ -26,18 +26,22 @@ function parseBooleanParam(value: unknown): boolean | undefined {
 
 export default defineEventHandler((event: H3Event) => {
   try {
-    const { draft, prerelease, notes, tag } = getQuery(event);
+    const { draft, prerelease, notes, tag, supported } = getQuery(event);
 
+    // Parse boolean parameters
     const draftBool = parseBooleanParam(draft);
     const prereleaseBool = parseBooleanParam(prerelease);
     const notesBool = parseBooleanParam(notes);
+    const supportedBool = parseBooleanParam(supported);
 
+    // Validate draft parameter if provided
     if (draft !== undefined && draftBool === undefined) {
       throw createError({
         statusCode: 400,
         statusMessage: "Invalid value for query parameter 'draft': must be 'true' or 'false'.",
       });
     }
+    // Validate prerelease parameter if provided
     if (prerelease !== undefined && prereleaseBool === undefined) {
       throw createError({
         statusCode: 400,
@@ -50,16 +54,64 @@ export default defineEventHandler((event: H3Event) => {
         statusMessage: "Invalid value for query parameter 'notes': must be 'true' or 'false'.",
       });
     }
+    if (supported !== undefined && supportedBool === undefined) {
+      throw createError({
+        statusCode: 400,
+        statusMessage: "Invalid value for query parameter 'supported': must be 'true' or 'false'.",
+      });
+    }
 
     const fileData: ReleasesFile = releasesData as ReleasesFile;
 
     let filtered: Release[] = fileData.releases;
 
-    if (draftBool !== undefined) {
-      filtered = filtered.filter((rel) => rel.draft === draftBool);
+    // Calculate supported versions if needed
+    let supportedMinorVersions: string[] = [];
+    if (supportedBool === true) {
+      // Get all stable releases (non-draft, non-prerelease)
+      const stableReleases = fileData.releases.filter((rel) => !rel.draft && !rel.prerelease);
+      
+      // Extract unique minor versions from stable releases
+      const minorVersionsSet = new Set<string>();
+      stableReleases.forEach((rel) => {
+        const match = rel.tag.match(/^v(\d+)\.(\d+)\./);
+        if (match) {
+          minorVersionsSet.add(`${match[1]}.${match[2]}`);
+        }
+      });
+      
+      // Sort minor versions in descending order
+      const sortedMinors = Array.from(minorVersionsSet).sort((a, b) => {
+        const [aMaj, aMin] = a.split('.').map(Number);
+        const [bMaj, bMin] = b.split('.').map(Number);
+        if (aMaj !== bMaj) return bMaj - aMaj;
+        return bMin - aMin;
+      });
+      
+      // Get the top 3 supported minor versions
+      supportedMinorVersions = sortedMinors.slice(0, 3);
     }
-    if (prereleaseBool !== undefined) {
-      filtered = filtered.filter((rel) => rel.prerelease === prereleaseBool);
+
+    // Apply additive filtering for draft and prerelease
+    // Always include stable releases, optionally add drafts and/or prereleases
+    filtered = filtered.filter((rel) => {
+      const isStable = !rel.draft && !rel.prerelease;
+      const includeDraft = draftBool === true && rel.draft;
+      const includePrerelease = prereleaseBool === true && rel.prerelease;
+      
+      return isStable || includeDraft || includePrerelease;
+    });
+    
+    // Filter by supported versions if requested
+    if (supportedBool === true && supportedMinorVersions.length > 0) {
+      filtered = filtered.filter((rel) => {
+        const match = rel.tag.match(/^v(\d+)\.(\d+)\./);
+        if (match) {
+          const minorVersion = `${match[1]}.${match[2]}`;
+          return supportedMinorVersions.includes(minorVersion);
+        }
+        return false;
+      });
     }
 
     // If tag is specified, filter to just that tag
