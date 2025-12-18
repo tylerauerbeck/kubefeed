@@ -43,9 +43,15 @@
         </section>
 
         <section class="docs-section">
-          <h2>API Endpoint</h2>
-          <p>Access the feed at:</p>
+          <h2>API Endpoints</h2>
+          <p>Kubefeed provides multiple feed formats to suit your needs:</p>
+          <h3>JSON Feed</h3>
+          <p>Access the JSON feed at:</p>
           <pre><code>/api/feeds/json</code></pre>
+          <h3>RSS Feed</h3>
+          <p>Access the RSS 2.0 feed at:</p>
+          <pre><code>/api/feeds/rss</code></pre>
+          <p>The RSS feed is perfect for subscribing to Kubernetes releases in your favorite RSS reader.</p>
         </section>
 
         <section class="docs-section">
@@ -89,12 +95,21 @@
 
         <section class="docs-section">
           <h2>Example Usage</h2>
+          <h3>JSON Feed Examples</h3>
           <p>Fetch all stable releases:</p>
           <pre><code>GET /api/feeds/json</code></pre>
-          <p>Fetch stable releases including drafts and pre-releases):</p>
+          <p>Fetch stable releases including drafts and pre-releases:</p>
           <pre><code>GET /api/feeds/json?draft=true&prerelease=true</code></pre>
           <p>Fetch releases including release notes:</p>
           <pre><code>GET /api/feeds/json?notes=true</code></pre>
+          
+          <h3>RSS Feed Examples</h3>
+          <p>Subscribe to all stable releases:</p>
+          <pre><code>GET /api/feeds/rss</code></pre>
+          <p>Subscribe to only non-prerelease versions:</p>
+          <pre><code>GET /api/feeds/rss?prerelease=false</code></pre>
+          <p>Subscribe to a specific release:</p>
+          <pre><code>GET /api/feeds/rss?tag=v1.35.0</code></pre>
         </section>
       </div>
     </main>
@@ -237,6 +252,14 @@
   font-weight: 600;
   margin-bottom: 1rem;
   color: #ffffff;
+}
+
+.docs-section h3 {
+  font-size: 1.4rem;
+  font-weight: 500;
+  margin-top: 1.5rem;
+  margin-bottom: 0.75rem;
+  color: rgba(255, 255, 255, 0.95);
 }
 
 .docs-section p {
