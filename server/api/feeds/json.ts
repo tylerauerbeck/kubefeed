@@ -28,30 +28,26 @@ export default defineEventHandler((event: H3Event) => {
   try {
     const { draft, prerelease, notes, tag, supported } = getQuery(event);
 
-    // Parse boolean parameters, with defaults for draft and prerelease
-    const draftParsed = parseBooleanParam(draft);
-    const prereleaseParsed = parseBooleanParam(prerelease);
+    // Parse boolean parameters
+    const draftBool = parseBooleanParam(draft);
+    const prereleaseBool = parseBooleanParam(prerelease);
     const notesBool = parseBooleanParam(notes);
     const supportedBool = parseBooleanParam(supported);
 
     // Validate draft parameter if provided
-    if (draft !== undefined && draftParsed === undefined) {
+    if (draft !== undefined && draftBool === undefined) {
       throw createError({
         statusCode: 400,
         statusMessage: "Invalid value for query parameter 'draft': must be 'true' or 'false'.",
       });
     }
     // Validate prerelease parameter if provided
-    if (prerelease !== undefined && prereleaseParsed === undefined) {
+    if (prerelease !== undefined && prereleaseBool === undefined) {
       throw createError({
         statusCode: 400,
         statusMessage: "Invalid value for query parameter 'prerelease': must be 'true' or 'false'.",
       });
     }
-    
-    // Set defaults: draft and prerelease default to false (exclude by default)
-    const draftBool = draftParsed ?? false;
-    const prereleaseBool = prereleaseParsed ?? false;
     if (notes !== undefined && notesBool === undefined) {
       throw createError({
         statusCode: 400,
@@ -96,11 +92,15 @@ export default defineEventHandler((event: H3Event) => {
       supportedMinorVersions = sortedMinors.slice(0, 3);
     }
 
-    // Apply draft filter (defaults to false - exclude drafts)
-    filtered = filtered.filter((rel) => rel.draft === draftBool);
-    
-    // Apply prerelease filter (defaults to false - exclude prereleases)
-    filtered = filtered.filter((rel) => rel.prerelease === prereleaseBool);
+    // Apply additive filtering for draft and prerelease
+    // Always include stable releases, optionally add drafts and/or prereleases
+    filtered = filtered.filter((rel) => {
+      const isStable = !rel.draft && !rel.prerelease;
+      const includeDraft = draftBool === true && rel.draft;
+      const includePrerelease = prereleaseBool === true && rel.prerelease;
+      
+      return isStable || includeDraft || includePrerelease;
+    });
     
     // Filter by supported versions if requested
     if (supportedBool === true && supportedMinorVersions.length > 0) {
