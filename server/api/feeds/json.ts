@@ -1,6 +1,5 @@
-import { readFileSync } from "fs";
-import { join } from "path";
 import { H3Event, createError, getQuery } from "h3";
+import releasesData from "~/server/data/kubernetes-releases.json";
 
 interface Release {
   name: string | null;
@@ -52,16 +51,7 @@ export default defineEventHandler((event: H3Event) => {
       });
     }
 
-    const filePath = join(process.cwd(), "server", "data", "kubernetes-releases.json");
-    let fileData: ReleasesFile;
-    try {
-      fileData = JSON.parse(readFileSync(filePath, "utf-8"));
-    } catch (err) {
-      throw createError({
-        statusCode: 500,
-        statusMessage: "Unable to read server/data/kubernetes-releases.json.",
-      });
-    }
+    const fileData: ReleasesFile = releasesData as ReleasesFile;
 
     let filtered: Release[] = fileData.releases;
 
