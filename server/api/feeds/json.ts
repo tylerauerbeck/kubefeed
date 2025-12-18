@@ -27,28 +27,42 @@ function parseBooleanParam(value: unknown): boolean | undefined {
 
 export default defineEventHandler((event: H3Event) => {
   try {
-    const { draft, prerelease, notes, tag } = getQuery(event);
+    const { draft, prerelease, notes, tag, supported } = getQuery(event);
 
-    const draftBool = parseBooleanParam(draft);
-    const prereleaseBool = parseBooleanParam(prerelease);
+    // Parse boolean parameters, with defaults for draft and prerelease
+    const draftParsed = parseBooleanParam(draft);
+    const prereleaseParsed = parseBooleanParam(prerelease);
     const notesBool = parseBooleanParam(notes);
+    const supportedBool = parseBooleanParam(supported);
 
-    if (draft !== undefined && draftBool === undefined) {
+    // Validate draft parameter if provided
+    if (draft !== undefined && draftParsed === undefined) {
       throw createError({
         statusCode: 400,
         statusMessage: "Invalid value for query parameter 'draft': must be 'true' or 'false'.",
       });
     }
-    if (prerelease !== undefined && prereleaseBool === undefined) {
+    // Validate prerelease parameter if provided
+    if (prerelease !== undefined && prereleaseParsed === undefined) {
       throw createError({
         statusCode: 400,
         statusMessage: "Invalid value for query parameter 'prerelease': must be 'true' or 'false'.",
       });
     }
+    
+    // Set defaults: draft and prerelease default to false (exclude by default)
+    const draftBool = draftParsed ?? false;
+    const prereleaseBool = prereleaseParsed ?? false;
     if (notes !== undefined && notesBool === undefined) {
       throw createError({
         statusCode: 400,
         statusMessage: "Invalid value for query parameter 'notes': must be 'true' or 'false'.",
+      });
+    }
+    if (supported !== undefined && supportedBool === undefined) {
+      throw createError({
+        statusCode: 400,
+        statusMessage: "Invalid value for query parameter 'supported': must be 'true' or 'false'.",
       });
     }
 
@@ -65,11 +79,49 @@ export default defineEventHandler((event: H3Event) => {
 
     let filtered: Release[] = fileData.releases;
 
-    if (draftBool !== undefined) {
-      filtered = filtered.filter((rel) => rel.draft === draftBool);
+    // Calculate supported versions if needed
+    let supportedMinorVersions: string[] = [];
+    if (supportedBool === true) {
+      // Get all stable releases (non-draft, non-prerelease)
+      const stableReleases = fileData.releases.filter((rel) => !rel.draft && !rel.prerelease);
+      
+      // Extract unique minor versions from stable releases
+      const minorVersionsSet = new Set<string>();
+      stableReleases.forEach((rel) => {
+        const match = rel.tag.match(/^v(\d+)\.(\d+)\./);
+        if (match) {
+          minorVersionsSet.add(`${match[1]}.${match[2]}`);
+        }
+      });
+      
+      // Sort minor versions in descending order
+      const sortedMinors = Array.from(minorVersionsSet).sort((a, b) => {
+        const [aMaj, aMin] = a.split('.').map(Number);
+        const [bMaj, bMin] = b.split('.').map(Number);
+        if (aMaj !== bMaj) return bMaj - aMaj;
+        return bMin - aMin;
+      });
+      
+      // Get the top 3 supported minor versions
+      supportedMinorVersions = sortedMinors.slice(0, 3);
     }
-    if (prereleaseBool !== undefined) {
-      filtered = filtered.filter((rel) => rel.prerelease === prereleaseBool);
+
+    // Apply draft filter (defaults to false - exclude drafts)
+    filtered = filtered.filter((rel) => rel.draft === draftBool);
+    
+    // Apply prerelease filter (defaults to false - exclude prereleases)
+    filtered = filtered.filter((rel) => rel.prerelease === prereleaseBool);
+    
+    // Filter by supported versions if requested
+    if (supportedBool === true && supportedMinorVersions.length > 0) {
+      filtered = filtered.filter((rel) => {
+        const match = rel.tag.match(/^v(\d+)\.(\d+)\./);
+        if (match) {
+          const minorVersion = `${match[1]}.${match[2]}`;
+          return supportedMinorVersions.includes(minorVersion);
+        }
+        return false;
+      });
     }
 
     // If tag is specified, filter to just that tag
