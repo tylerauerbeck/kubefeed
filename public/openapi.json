@@ -1,0 +1,243 @@
+{
+  "openapi": "3.0.3",
+  "info": {
+    "title": "KubeFeed API",
+    "description": "API for retrieving Kubernetes release information",
+    "version": "1.0.0"
+  },
+  "servers": [
+    {
+      "url": "/api",
+      "description": "API server"
+    }
+  ],
+  "paths": {
+    "/feeds/json": {
+      "get": {
+        "summary": "Get Kubernetes releases",
+        "description": "Retrieves a filtered list of Kubernetes releases based on query parameters",
+        "operationId": "getKubernetesReleases",
+        "parameters": [
+          {
+            "name": "draft",
+            "in": "query",
+            "description": "Include draft releases when set to true",
+            "required":  false,
+            "schema": {
+              "type": "boolean"
+            }
+          },
+          {
+            "name": "prerelease",
+            "in":  "query",
+            "description":  "Include prerelease versions when set to true",
+            "required": false,
+            "schema": {
+              "type": "boolean"
+            }
+          },
+          {
+            "name":  "notes",
+            "in":  "query",
+            "description":  "Include release notes in the response when set to true",
+            "required": false,
+            "schema":  {
+              "type": "boolean"
+            }
+          },
+          {
+            "name": "tag",
+            "in": "query",
+            "description": "Filter to a specific release tag (e.g., 'v1.28.0')",
+            "required": false,
+            "schema":  {
+              "type": "string"
+            }
+          },
+          {
+            "name": "supported",
+            "in": "query",
+            "description": "Filter to only the top 3 supported minor versions when set to true",
+            "required": false,
+            "schema":  {
+              "type": "boolean"
+            }
+          },
+          {
+            "name": "before",
+            "in": "query",
+            "description": "Filter releases published before this date (YYYYMMDD format)",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "pattern": "^\\d{8}$",
+              "example": "20231231"
+            }
+          },
+          {
+            "name": "after",
+            "in": "query",
+            "description": "Filter releases published after this date (YYYYMMDD format)",
+            "required": false,
+            "schema": {
+              "type":  "string",
+              "pattern":  "^\\d{8}$",
+              "example": "20230101"
+            }
+          }
+        ],
+        "responses":  {
+          "200": {
+            "description": "Successful response with Kubernetes releases",
+            "content":  {
+              "application/json":  {
+                "schema": {
+                  "$ref": "#/components/schemas/ReleasesResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description":  "Bad request - Invalid query parameters",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                },
+                "examples": {
+                  "invalidBoolean": {
+                    "summary": "Invalid boolean parameter",
+                    "value": {
+                      "statusCode": 400,
+                      "statusMessage": "Invalid value for query parameter 'draft': must be 'true' or 'false'."
+                    }
+                  },
+                  "invalidDate": {
+                    "summary": "Invalid date format",
+                    "value": {
+                      "statusCode": 400,
+                      "statusMessage": "Invalid value for query parameter 'after': must be in YYYYMMDD format."
+                    }
+                  },
+                  "invalidDateRange":  {
+                    "summary": "Invalid date range",
+                    "value": {
+                      "statusCode": 400,
+                      "statusMessage": "Invalid date range: 'before' date must be later than 'after' date."
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Release not found with specified tag",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                },
+                "example": {
+                  "statusCode": 404,
+                  "statusMessage": "Release with tag 'v1.99.0' not found."
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal server error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                },
+                "example": {
+                  "statusCode": 500,
+                  "statusMessage": "Unhandled error in feeds/json endpoint."
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "Release": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "nullable": true,
+            "description": "Human-readable name of the release"
+          },
+          "tag": {
+            "type": "string",
+            "description": "Git tag for the release (e.g., 'v1.28.0')"
+          },
+          "published_date":  {
+            "type": "string",
+            "format": "date-time",
+            "description":  "ISO 8601 formatted publication date"
+          },
+          "url": {
+            "type":  "string",
+            "format": "uri",
+            "description": "URL to the release page"
+          },
+          "draft":  {
+            "type": "boolean",
+            "description": "Whether this is a draft release"
+          },
+          "prerelease":  {
+            "type": "boolean",
+            "description": "Whether this is a prerelease version"
+          },
+          "release_notes": {
+            "type": "string",
+            "nullable": true,
+            "description":  "Release notes (only included when notes=true)"
+          }
+        },
+        "required": ["tag", "published_date", "url", "draft", "prerelease"]
+      },
+      "ReleasesResponse": {
+        "type": "object",
+        "properties": {
+          "releases": {
+            "type": "object",
+            "additionalProperties": {
+              "$ref": "#/components/schemas/Release"
+            },
+            "description": "Map of release tags to release objects"
+          },
+          "count": {
+            "type": "integer",
+            "description": "Number of releases in the response"
+          },
+          "last_updated": {
+            "type": "string",
+            "format": "date-time",
+            "description": "Timestamp of when the release data was last updated"
+          }
+        },
+        "required": ["releases", "count", "last_updated"]
+      },
+      "Error": {
+        "type":  "object",
+        "properties":  {
+          "statusCode": {
+            "type": "integer",
+            "description": "HTTP status code"
+          },
+          "statusMessage": {
+            "type": "string",
+            "description": "Error message describing what went wrong"
+          }
+        },
+        "required": ["statusCode", "statusMessage"]
+      }
+    }
+  }
+}
