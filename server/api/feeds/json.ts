@@ -24,9 +24,29 @@ function parseBooleanParam(value: unknown): boolean | undefined {
   return undefined;
 }
 
+function parseDateParam(value: unknown): Date | null {
+  if (typeof value !== "string") return null;
+  
+  // Validate YYYYMMDD format
+  const dateRegex = /^(\d{4})(\d{2})(\d{2})$/;
+  const match = value.match(dateRegex);
+  
+  if (!match) return null;
+  
+  const [, year, month, day] = match;
+  // Convert YYYYMMDD to ISO format with time set to 00:00:00Z
+  const isoDate = `${year}-${month}-${day}T00:00:00Z`;
+  const date = new Date(isoDate);
+  
+  // Validate that the date is valid
+  if (isNaN(date.getTime())) return null;
+  
+  return date;
+}
+
 export default defineEventHandler((event: H3Event) => {
   try {
-    const { draft, prerelease, notes, tag, supported } = getQuery(event);
+    const { draft, prerelease, notes, tag, supported, start, end } = getQuery(event);
 
     // Parse boolean parameters
     const draftBool = parseBooleanParam(draft);
@@ -58,6 +78,38 @@ export default defineEventHandler((event: H3Event) => {
       throw createError({
         statusCode: 400,
         statusMessage: "Invalid value for query parameter 'supported': must be 'true' or 'false'.",
+      });
+    }
+
+    // Parse and validate date parameters
+    let startDate: Date | null = null;
+    let endDate: Date | null = null;
+
+    if (start !== undefined) {
+      startDate = parseDateParam(start);
+      if (startDate === null) {
+        throw createError({
+          statusCode: 400,
+          statusMessage: "Invalid value for query parameter 'start': must be in YYYYMMDD format.",
+        });
+      }
+    }
+
+    if (end !== undefined) {
+      endDate = parseDateParam(end);
+      if (endDate === null) {
+        throw createError({
+          statusCode: 400,
+          statusMessage: "Invalid value for query parameter 'end': must be in YYYYMMDD format.",
+        });
+      }
+    }
+
+    // Validate that end date is after start date if both are provided
+    if (startDate && endDate && endDate <= startDate) {
+      throw createError({
+        statusCode: 400,
+        statusMessage: "Invalid date range: 'end' date must be later than 'start' date.",
       });
     }
 
@@ -111,6 +163,30 @@ export default defineEventHandler((event: H3Event) => {
           return supportedMinorVersions.includes(minorVersion);
         }
         return false;
+      });
+    }
+
+    // Filter by date range if provided
+    if (startDate || endDate) {
+      filtered = filtered.filter((rel) => {
+        const publishedDate = new Date(rel.published_date);
+        
+        // If only start date is provided, return releases after that date
+        if (startDate && !endDate) {
+          return publishedDate >= startDate;
+        }
+        
+        // If only end date is provided, return releases before that date
+        if (!startDate && endDate) {
+          return publishedDate <= endDate;
+        }
+        
+        // If both are provided, return releases within the range
+        if (startDate && endDate) {
+          return publishedDate >= startDate && publishedDate <= endDate;
+        }
+        
+        return true;
       });
     }
 
