@@ -1,44 +1,45 @@
 <template>
   <div>
     <ClientOnly>
-      <component 
-        v-if="config && ApiReference" 
-        :is="ApiReference" 
-        :configuration="config" 
-      />
-      <div v-else>Loading... </div>
+      <div id="swagger-ui"></div>
     </ClientOnly>
   </div>
 </template>
 
 <script setup lang="ts">
-import { ref, onMounted } from 'vue'
-import type { Component } from 'vue'
-
-const config = ref<any>(null)
-const ApiReference = ref<Component | null>(null)
+import { onMounted } from 'vue'
 
 onMounted(async () => {
-  try {
-    // Fetch the OpenAPI spec
-    const response = await fetch('/openapi.json')
-    const spec = await response.json()
+  if (process.client) {
+    // Dynamically import Swagger UI
+    const SwaggerUIBundle = (await import('swagger-ui-dist')).SwaggerUIBundle
+    const SwaggerUIStandalonePreset = (await import('swagger-ui-dist')).SwaggerUIStandalonePreset
     
-    // Dynamically import ApiReference component
-    const module = await import('@scalar/api-reference')
-    await import('@scalar/api-reference/style.css')
+    // Import CSS
+    await import('swagger-ui-dist/swagger-ui.css')
     
-    ApiReference.value = module.ApiReference
-    
-    // Set config with the fetched spec
-    config.value = {
-      spec: {
-        content: spec  // Use content instead of url
-      },
-      theme: 'default'
-    }
-  } catch (error) {
-    console.error('Failed to load API documentation:', error)
+    // Initialize Swagger UI
+    SwaggerUIBundle({
+      url: '/openapi.json',
+      dom_id: '#swagger-ui',
+      deepLinking: true,
+      presets: [
+        SwaggerUIBundle.presets.apis,
+        SwaggerUIStandalonePreset
+      ],
+      layout: 'BaseLayout',
+      defaultModelsExpandDepth: 1,
+      defaultModelExpandDepth: 1,
+      displayRequestDuration: true,
+      tryItOutEnabled: true
+    })
   }
 })
 </script>
+
+<style>
+/* Optional: Add some styling */
+#swagger-ui {
+  font-family: sans-serif;
+}
+</style>
