@@ -83,6 +83,24 @@
                 <td>boolean</td>
                 <td>false</td>
               </tr>
+              <tr>
+                <td><strong>supported</strong></td>
+                <td>Filter for supported Kubernetes versions (latest 3 minor releases)</td>
+                <td>boolean</td>
+                <td>false</td>
+              </tr>
+              <tr>
+                <td><strong>before</strong></td>
+                <td>Filter for releases before a specific date (YYYYMMDD). Can be used in conjunction with the <strong>after</strong> parameter to get releases between a set of dates.</td>
+                <td>string</td>
+                <td>null</td>
+              </tr>
+              <tr>
+                <td><strong>after</strong></td>
+                <td>Filter for releases after a specific date (YYYYMMDD). Can be used in conjunction with the <strong>before</strong> parameter to get releases between a set of dates.</td>
+                <td>string</td>
+                <td>null</td>
+              </tr>
             </tbody>
           </table>
         </section>
