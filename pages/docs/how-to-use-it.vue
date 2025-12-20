@@ -113,6 +113,14 @@
           <pre><code>GET /api/feeds/json?draft=true&prerelease=true</code></pre>
           <p>Fetch releases including release notes:</p>
           <pre><code>GET /api/feeds/json?notes=true</code></pre>
+          <p>Fetch releases before a specific date:</p>
+          <pre><code>GET /api/feeds/json?before=20240101</code></pre>
+          <p>Fetch releases after a specific date:</p>
+          <pre><code>GET /api/feeds/json?after=20230101</code></pre>
+          <p>Fetch releases between two dates:</p>
+          <pre><code>GET /api/feeds/json?after=20230101&before=20231231</code></pre>
+          <pre><code>Fetch currently supported releases</code></pre>
+          <p>GET /api/feeds/json?supported=true</p>
         </section>
       </div>
     </main>
