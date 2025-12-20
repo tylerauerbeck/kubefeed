@@ -24,9 +24,29 @@ function parseBooleanParam(value: unknown): boolean | undefined {
   return undefined;
 }
 
+function parseDateParam(value: unknown): Date | null {
+  if (typeof value !== "string") return null;
+  
+  // Validate YYYYMMDD format
+  const dateRegex = /^(\d{4})(\d{2})(\d{2})$/;
+  const match = value.match(dateRegex);
+  
+  if (!match) return null;
+  
+  const [, year, month, day] = match;
+  // Convert YYYYMMDD to ISO format with time set to 00:00:00Z
+  const isoDate = `${year}-${month}-${day}T00:00:00Z`;
+  const date = new Date(isoDate);
+  
+  // Validate that the date is valid
+  if (isNaN(date.getTime())) return null;
+  
+  return date;
+}
+
 export default defineEventHandler((event: H3Event) => {
   try {
-    const { draft, prerelease, notes, tag, supported } = getQuery(event);
+    const { draft, prerelease, notes, tag, supported, before, after } = getQuery(event);
 
     // Parse boolean parameters
     const draftBool = parseBooleanParam(draft);
@@ -58,6 +78,38 @@ export default defineEventHandler((event: H3Event) => {
       throw createError({
         statusCode: 400,
         statusMessage: "Invalid value for query parameter 'supported': must be 'true' or 'false'.",
+      });
+    }
+
+    // Parse and validate date parameters
+    let afterDate: Date | null = null;
+    let beforeDate: Date | null = null;
+
+    if (after !== undefined) {
+      afterDate = parseDateParam(after);
+      if (afterDate === null) {
+        throw createError({
+          statusCode: 400,
+          statusMessage: "Invalid value for query parameter 'after': must be in YYYYMMDD format.",
+        });
+      }
+    }
+
+    if (before !== undefined) {
+      beforeDate = parseDateParam(before);
+      if (beforeDate === null) {
+        throw createError({
+          statusCode: 400,
+          statusMessage: "Invalid value for query parameter 'before': must be in YYYYMMDD format.",
+        });
+      }
+    }
+
+    // Validate that before date is after after date if both are provided
+    if (afterDate && beforeDate && beforeDate <= afterDate) {
+      throw createError({
+        statusCode: 400,
+        statusMessage: "Invalid date range: 'before' date must be later than 'after' date.",
       });
     }
 
@@ -111,6 +163,30 @@ export default defineEventHandler((event: H3Event) => {
           return supportedMinorVersions.includes(minorVersion);
         }
         return false;
+      });
+    }
+
+    // Filter by date range if provided
+    if (afterDate || beforeDate) {
+      filtered = filtered.filter((rel) => {
+        const publishedDate = new Date(rel.published_date);
+        
+        // If only after date is provided, return releases after that date
+        if (afterDate && !beforeDate) {
+          return publishedDate >= afterDate;
+        }
+        
+        // If only before date is provided, return releases before that date
+        if (!afterDate && beforeDate) {
+          return publishedDate <= beforeDate;
+        }
+        
+        // If both are provided, return releases within the range
+        if (afterDate && beforeDate) {
+          return publishedDate >= afterDate && publishedDate <= beforeDate;
+        }
+        
+        return true;
       });
     }
 
