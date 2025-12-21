@@ -6,7 +6,7 @@ export default defineNuxtConfig({
   app: {
     head: {
       link: [
-        { rel: 'icon', type: 'image/png', href: '/kubefeed.png' }
+        { rel: 'icon', type: 'image/png', href: '/kubefeed-ico.png' }
       ]
     }
   }
