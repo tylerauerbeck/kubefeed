@@ -44,15 +44,75 @@ function parseDateParam(value: unknown): Date | null {
   return date;
 }
 
+function parseVersion(tag: string): { major: number; minor: number; patch: number } | null {
+  const match = tag.match(/^v(\d+)\.(\d+)\.(\d+)/);
+  if (!match) return null;
+  return {
+    major: parseInt(match[1], 10),
+    minor: parseInt(match[2], 10),
+    patch: parseInt(match[3], 10),
+  };
+}
+
+function getLatestReleases(releases: Release[], includePrerelease: boolean): Release[] {
+  // Group releases by minor version and type (stable vs prerelease)
+  const grouped = new Map<string, { stable: Release[]; prerelease: Release[] }>();
+  
+  releases.forEach((rel) => {
+    const version = parseVersion(rel.tag);
+    if (!version) return;
+    
+    const minorKey = `${version.major}.${version.minor}`;
+    if (!grouped.has(minorKey)) {
+      grouped.set(minorKey, { stable: [], prerelease: [] });
+    }
+    
+    const group = grouped.get(minorKey)!;
+    if (rel.prerelease) {
+      group.prerelease.push(rel);
+    } else {
+      group.stable.push(rel);
+    }
+  });
+  
+  const result: Release[] = [];
+  
+  // For each minor version, get the latest release(s)
+  grouped.forEach((group) => {
+    // Sort by patch version descending
+    const sortByPatch = (a: Release, b: Release): number => {
+      const aVer = parseVersion(a.tag);
+      const bVer = parseVersion(b.tag);
+      if (!aVer || !bVer) return 0;
+      return bVer.patch - aVer.patch;
+    };
+    
+    // Always add the latest stable release if it exists
+    if (group.stable.length > 0) {
+      group.stable.sort(sortByPatch);
+      result.push(group.stable[0]);
+    }
+    
+    // If prerelease flag is true, also add the latest prerelease
+    if (includePrerelease && group.prerelease.length > 0) {
+      group.prerelease.sort(sortByPatch);
+      result.push(group.prerelease[0]);
+    }
+  });
+  
+  return result;
+}
+
 export default defineEventHandler((event: H3Event) => {
   try {
-    const { draft, prerelease, notes, tag, supported, before, after } = getQuery(event);
+    const { draft, prerelease, notes, tag, supported, before, after, latest } = getQuery(event);
 
     // Parse boolean parameters
     const draftBool = parseBooleanParam(draft);
     const prereleaseBool = parseBooleanParam(prerelease);
     const notesBool = parseBooleanParam(notes);
     const supportedBool = parseBooleanParam(supported);
+    const latestBool = parseBooleanParam(latest);
 
     // Validate draft parameter if provided
     if (draft !== undefined && draftBool === undefined) {
@@ -78,6 +138,12 @@ export default defineEventHandler((event: H3Event) => {
       throw createError({
         statusCode: 400,
         statusMessage: "Invalid value for query parameter 'supported': must be 'true' or 'false'.",
+      });
+    }
+    if (latest !== undefined && latestBool === undefined) {
+      throw createError({
+        statusCode: 400,
+        statusMessage: "Invalid value for query parameter 'latest': must be 'true' or 'false'.",
       });
     }
 
@@ -188,6 +254,11 @@ export default defineEventHandler((event: H3Event) => {
         
         return true;
       });
+    }
+
+    // Apply latest filter if requested
+    if (latestBool === true) {
+      filtered = getLatestReleases(filtered, prereleaseBool === true);
     }
 
     // If tag is specified, filter to just that tag
