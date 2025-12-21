@@ -38,12 +38,12 @@
         <h1>What Is It</h1>
         
         <section class="docs-section">
-          <h2>Overview</h2>
+          <h2 id="overview">Overview</h2>
           <p>Kubefeed is a tool for tracking Kubernetes releases and updates. It provides a simple JSON feed API that makes it easy to stay up-to-date with the latest Kubernetes versions.</p>
         </section>
 
         <section class="docs-section">
-          <h2>Key Features</h2>
+          <h2 id="key-features">Key Features</h2>
           <ul>
             <li>Track official Kubernetes releases</li>
             <li>JSON feed API for easy integration</li>
@@ -52,10 +52,19 @@
         </section>
 
         <section class="docs-section">
-          <h2>Why Use Kubefeed?</h2>
+          <h2 id="why-use-kubefeed">Why Use Kubefeed?</h2>
           <p>Stay informed about Kubernetes releases without having to manually check GitHub or other sources. Kubefeed aggregates release information and provides it in an easy-to-consume format.</p>
         </section>
       </div>
+
+      <aside class="toc-sidebar">
+        <h3 class="toc-header">On This Page</h3>
+        <nav class="toc-nav">
+          <a href="#overview" class="toc-link">Overview</a>
+          <a href="#key-features" class="toc-link">Key Features</a>
+          <a href="#why-use-kubefeed" class="toc-link">Why Use Kubefeed?</a>
+        </nav>
+      </aside>
     </main>
   </div>
 </template>
@@ -177,7 +186,6 @@
   flex: 1;
   max-width: 800px;
   padding: 2rem;
-  margin-right: 2rem;
 }
 
 .docs-container h1 {
@@ -185,6 +193,10 @@
   font-weight: bold;
   margin-bottom: 2rem;
   letter-spacing: 0.05em;
+}
+
+.docs-container h2 {
+  scroll-margin-top: 100px;
 }
 
 .docs-section {
@@ -214,5 +226,48 @@
 
 .docs-section li {
   margin-bottom: 0.5rem;
+}
+
+.toc-sidebar {
+  position: sticky;
+  top: 100px;
+  width: 200px;
+  min-width: 200px;
+  height: fit-content;
+  padding: 2rem;
+  background-color: rgba(255, 255, 255, 0.05);
+  border-radius: 8px;
+  margin-right: 2rem;
+}
+
+.toc-header {
+  font-size: 1rem;
+  font-weight: bold;
+  margin-bottom: 1.5rem;
+  padding-bottom: 1rem;
+  color: white;
+  letter-spacing: 0.05em;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.toc-nav {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.toc-link {
+  color: rgba(255, 255, 255, 0.7);
+  text-decoration: none;
+  font-size: 0.9rem;
+  padding: 0.25rem 0;
+  transition: color 0.2s ease;
+  border-left: 2px solid transparent;
+  padding-left: 1rem;
+}
+
+.toc-link:hover {
+  color: white;
+  border-left-color: white;
 }
 </style>

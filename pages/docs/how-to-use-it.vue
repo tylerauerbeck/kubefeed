@@ -38,18 +38,18 @@
         <h1>How To Use It</h1>
         
         <section class="docs-section">
-          <h2>Getting Started</h2>
+          <h2 id="getting-started">Getting Started</h2>
           <p>Using Kubefeed is simple. The API provides a JSON endpoint that you can query to get information about Kubernetes releases.</p>
         </section>
 
         <section class="docs-section">
-          <h2>API Endpoint</h2>
+          <h2 id="api-endpoint">API Endpoint</h2>
           <p>Access the feed at:</p>
           <pre><code>/api/feeds/json</code></pre>
         </section>
 
         <section class="docs-section">
-          <h2>Query Parameters</h2>
+          <h2 id="query-parameters">Query Parameters</h2>
           <!-- <ul>
             <li><strong>draft</strong> - Filter by draft status (true/false)</li>
             <li><strong>prerelease</strong> - Filter by pre-release status (true/false)</li>
@@ -106,7 +106,7 @@
         </section>
 
         <section class="docs-section">
-          <h2>Example Usage</h2>
+          <h2 id="example-usage">Example Usage</h2>
           <p>Fetch all stable releases:</p>
           <pre><code>GET /api/feeds/json</code></pre>
           <p>Fetch stable releases including drafts and pre-releases):</p>
@@ -123,6 +123,16 @@
           <pre><code>GET /api/feeds/json?supported=true</code></pre>
         </section>
       </div>
+
+      <aside class="toc-sidebar">
+        <h3 class="toc-header">On This Page</h3>
+        <nav class="toc-nav">
+          <a href="#getting-started" class="toc-link">Getting Started</a>
+          <a href="#api-endpoint" class="toc-link">API Endpoint</a>
+          <a href="#query-parameters" class="toc-link">Query Parameters</a>
+          <a href="#example-usage" class="toc-link">Example Usage</a>
+        </nav>
+      </aside>
     </main>
   </div>
 </template>
@@ -244,7 +254,6 @@
   flex: 1;
   max-width: 800px;
   padding: 2rem;
-  margin-right: 2rem;
 }
 
 .docs-container h1 {
@@ -252,6 +261,10 @@
   font-weight: bold;
   margin-bottom: 2rem;
   letter-spacing: 0.05em;
+}
+
+.docs-container h2 {
+  scroll-margin-top: 100px;
 }
 
 .docs-section {
@@ -334,5 +347,48 @@
 .docs-section table td strong {
   color: #a8dadc;
   font-family: 'Courier New', monospace;
+}
+
+.toc-sidebar {
+  position: sticky;
+  top: 100px;
+  width: 200px;
+  min-width: 200px;
+  height: fit-content;
+  padding: 2rem;
+  background-color: rgba(255, 255, 255, 0.05);
+  border-radius: 8px;
+  margin-right: 2rem;
+}
+
+.toc-header {
+  font-size: 1rem;
+  font-weight: bold;
+  margin-bottom: 1.5rem;
+  padding-bottom: 1rem;
+  color: white;
+  letter-spacing: 0.05em;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.toc-nav {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.toc-link {
+  color: rgba(255, 255, 255, 0.7);
+  text-decoration: none;
+  font-size: 0.9rem;
+  padding: 0.25rem 0;
+  transition: color 0.2s ease;
+  border-left: 2px solid transparent;
+  padding-left: 1rem;
+}
+
+.toc-link:hover {
+  color: white;
+  border-left-color: white;
 }
 </style>
