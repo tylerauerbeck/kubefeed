@@ -1,5 +1,6 @@
 <template>
   <div>
+    <NavBarBW />
     <ClientOnly>
       <div id="swagger-ui"></div>
     </ClientOnly>
@@ -8,6 +9,7 @@
 
 <script setup lang="ts">
 import { onMounted } from 'vue'
+import NavBarBW from '../../components/NavBarBW.vue'
 
 onMounted(async () => {
   if (process.client) {
@@ -42,4 +44,9 @@ onMounted(async () => {
 #swagger-ui {
   font-family: sans-serif;
 }
+
+html, body, #__nuxt {
+  background-color: #ffffff;
+  }
+
 </style>
