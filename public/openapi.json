@@ -64,6 +64,15 @@
             }
           },
           {
+            "name": "latest",
+            "in": "query",
+            "description": "Filter to only newest releases and prereleases",
+            "required": false,
+            "schema": {
+              "type": "boolean"
+            }
+          },
+          {
             "name": "before",
             "in": "query",
             "description": "Filter releases published before this date (YYYYMMDD format)",
