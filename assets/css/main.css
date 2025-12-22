@@ -3,6 +3,6 @@ body {
   padding: 0;
 }
 
-html, body, #__nuxt {
-  background-color: #2d2d2d; /* Replace with your actual background */
+html, body {
+  background-color: #2d2d2d !important; /* Replace with your actual background */
 }
