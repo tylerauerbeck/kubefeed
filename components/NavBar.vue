@@ -1,7 +1,5 @@
 <template>
-  <div class="landing-page">
-    <NavBar />
-    <!-- <header class="header">
+    <header class="header">
       <div class="header-icons">
         <NuxtLink to="/" class="icon-link active" aria-label="Home">
           <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
@@ -31,28 +29,10 @@
           </svg>
         </a>
       </div>
-    </header> -->
-    <div class="content">
-      <img src="/kubefeed.png" alt="Kubefeed" class="logo" />
-      <h1 class="title">KUBEFEED</h1>
-      <p class="subtitle">Your Source for Kubernetes Release Details</p>
-    </div>
-  </div>
+    </header>
 </template>
 
-<script setup lang="ts">
-import NavBar from '../components/NavBar.vue'
-</script>
-
 <style scoped>
-.landing-page {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  min-height: 100vh;
-  background-color: #2d2d2d;
-  position: relative;
-}
 
 .header {
   position: fixed;
@@ -84,34 +64,5 @@ import NavBar from '../components/NavBar.vue'
 .icon-link svg {
   width: 24px;
   height: 24px;
-}
-
-.content {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 2rem;
-}
-
-.logo {
-  max-width: 300px;
-  width: 100%;
-  height: auto;
-}
-
-.title {
-  font-size: 3rem;
-  font-weight: bold;
-  color: white;
-  margin: 0;
-  letter-spacing: 0.3em;
-}
-
-.subtitle {
-  font-size: 1.25rem;
-  color: rgba(255, 255, 255, 0.8);
-  margin: 0;
-  font-weight: 300;
-  letter-spacing: 0.05em;
 }
 </style>

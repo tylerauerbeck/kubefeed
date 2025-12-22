@@ -1,6 +1,7 @@
 <template>
   <div class="docs-page">
-    <header class="header">
+    <NavBar />
+    <!-- <header class="header">
       <div class="header-content">
         <div class="header-icons">
           <NuxtLink to="/" class="icon-link" aria-label="Home">
@@ -32,7 +33,7 @@
           </a>
         </div>
       </div>
-    </header>
+    </header> -->
     
     <main class="main-content">
       <aside class="sidebar">
