@@ -61,6 +61,12 @@ import DocsSidebar from '../../components/DocsSidebar.vue';
                 <td>false</td>
               </tr>
               <tr>
+                <td><strong>latest</strong></td>
+                <td>When used with <strong>supported</strong>, returns only the latest patch release for each supported minor version. If <strong>prerelease</strong> is also set, it will include the latest pre-release as well.</td>
+                <td>boolean</td>
+                <td>false</td>
+              </tr>
+              <tr>
                 <td><strong>before</strong></td>
                 <td>Filter for releases before a specific date (YYYYMMDD). Can be used in conjunction with the <strong>after</strong> parameter to get releases between a set of dates.</td>
                 <td>string</td>
@@ -92,6 +98,20 @@ import DocsSidebar from '../../components/DocsSidebar.vue';
           <pre><code>GET /api/feeds/json?after=20230101&before=20231231</code></pre>
           <p>Fetch currently supported releases:</p>
           <pre><code>GET /api/feeds/json?supported=true</code></pre>
+          <p>Get latest supported releases</p>
+          <pre><code>GET /api/feeds/json?supported=true&latest=true</code></pre>
+          <p>Get latest supported releases including prereleases</p>
+          <pre><code>GET /api/feeds/json?supported=true&latest=true&prerelease=true</code></pre>
+        </section>
+
+        <section class="docs-section">
+          <h2 id="getting-started">Want To Experiment?</h2>
+          <p>
+            Kubefeed provides a Swagger UI where you can start playing around with the different parameters.
+            Take any of the above examples you're interested in and give them a whirl
+            <NuxtLink to="/docs/openapi" class="my-link-white">here</NuxtLink>
+          </p>
+          
         </section>
       </div>
 
@@ -264,6 +284,10 @@ import DocsSidebar from '../../components/DocsSidebar.vue';
 .toc-link:hover {
   color: white;
   border-left-color: white;
+}
+
+.my-link-white {
+  color: white;
 }
 </style>
 

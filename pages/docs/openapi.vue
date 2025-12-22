@@ -46,7 +46,7 @@ onMounted(async () => {
 }
 
 html, body, #__nuxt {
-  background-color: #ffffff;
+  background-color: #ffffff !important;
   }
 
 </style>
