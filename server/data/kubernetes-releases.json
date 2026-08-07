@@ -1,6 +1,15 @@
 {
   "releases": [
     {
+      "name": "v1.37.0-rc.0",
+      "tag": "v1.37.0-rc.0",
+      "published_date": "2026-08-06T12:04:57Z",
+      "url": "https://github.com/kubernetes/kubernetes/releases/tag/v1.37.0-rc.0",
+      "draft": false,
+      "prerelease": true,
+      "release_notes": "\nSee [kubernetes-announce@](https://groups.google.com/forum/#!forum/kubernetes-announce). Additional binary downloads are linked in the [CHANGELOG](https://github.com/kubernetes/kubernetes/blob/master/CHANGELOG/CHANGELOG-1.37.md).\n\nSee the [CHANGELOG](https://github.com/kubernetes/kubernetes/blob/master/CHANGELOG/CHANGELOG-1.37.md) for more details.\n\n\n\n"
+    },
+    {
       "name": "v1.36.3",
       "tag": "v1.36.3",
       "published_date": "2026-07-23T00:35:52Z",
@@ -7282,6 +7291,6 @@
       "release_notes": "New stable release with PD volumes and binary releases.\n\nWith binary releases, some clouds are broken.  We will be cutting new releases as these are fixed.\n\nNamely, v0.3 should be used for vSphere, Azure and Rackspace.  GCE and Vagrant are supported the v0.4 binary release.\n\n| binary | hash alg | hash |\n| --- | --- | --- |\n| `kubernetes.tar.gz` | md5 | `4e743950263b15045b698e0fee0cf761` |\n| `kubernetes.tar.gz` | sha1 | `d6ebb46071b09b559ea55d2afc246f8b5af3078d` |\n"
     }
   ],
-  "count": 809,
-  "last_updated": "2026-08-06T03:10:07.653Z"
+  "count": 810,
+  "last_updated": "2026-08-07T03:07:04.587Z"
 }
